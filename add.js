@@ -14,17 +14,19 @@ export const addArticle = (
     const createdAtDateString = createdAt.toDate().toLocaleString();
     // createdAt - Timestamp -> Date -> String
 
-    const article = `<article id="${articleId}">
-        <header>
-          <h2>${title}</h2>
-          <span>${author}, ${createdAtDateString}</span>
-        </header>
-  
-        <p>${content}</p>
+    const article = `<article id="${articleId}" class="card mb-5">
+        <div class="card-body">
+          <header class="d-flex justify-content-between">
+            <h2 class="card-title">${title}</h2>
+            <em>${author}, ${createdAtDateString}</em>
+          </header>
+    
+          <p class="card-text">${content}</p>
 
-        <footer>
-            <button data-delete>Delete</button>
-        </footer>
+          <footer>
+              <button class="btn btn-warning" data-delete><i class="bi bi-trash-fill"></i></button>
+          </footer>
+        </div>
       </article>`;
 
     // articles.innerHTML = articles.innerHTML + article;
@@ -40,8 +42,8 @@ const handleDeleteButtons = (articlesCollection) => {
     button.addEventListener("click", (event) => {
       event.preventDefault();
 
-      const target = event.target;
-      const article = target.parentElement.parentElement;
+      const target = event.currentTarget;
+      const article = target.parentElement.parentElement.parentElement;
 
       const articleRef = doc(articlesCollection, article.id);
 

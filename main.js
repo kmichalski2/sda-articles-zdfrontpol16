@@ -1,4 +1,6 @@
 import "./style.css";
+import "./node_modules/bootstrap/dist/css/bootstrap.css";
+import "./node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import { initializeApp } from "firebase/app";
 import { collection, getFirestore } from "firebase/firestore";
 import { initAddArticleForm } from "./add";
@@ -15,5 +17,3 @@ const articlesCollection = collection(database, "articles");
 
 renderArticles(articlesCollection);
 initAddArticleForm(articlesCollection);
-
-// TODO: Dodaj możliwość usuwania artykułów
