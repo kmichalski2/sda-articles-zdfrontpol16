@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <section class="container" id="articles"></section>
+
+    <section class="container">
+      <form id="addArticleForm" validate>
+        <div>
+          <label>Title</label>
+          <input type="text" name="title" required />
+        </div>
+        <div>
+          <label>Content</label>
+          <textarea name="content" required></textarea>
+        </div>
+        <div>
+          <label>Author</label>
+          <input type="text" name="author" required />
+        </div>
+
+        <div>
+          <button type="submit">Post</button>
+        </div>
+      </form>
+    </section>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
