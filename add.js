@@ -1,30 +1,32 @@
 import { Timestamp, addDoc, doc, deleteDoc } from "firebase/firestore";
 
-export const addArticle = (
-  title,
-  content,
-  author,
-  createdAt,
-  articleId,
-  articlesCollection
-) => {
+export const addArticle = (articleData, articleId, articlesCollection) => {
   const articles = document.querySelector("#articles");
 
   if (articles) {
-    const createdAtDateString = createdAt.toDate().toLocaleString();
+    const createdAtDateString = articleData.createdAt.toDate().toLocaleString();
     // createdAt - Timestamp -> Date -> String
 
     const article = `<article id="${articleId}" class="card mb-5">
         <div class="card-body">
           <header class="d-flex justify-content-between">
-            <h2 class="card-title">${title}</h2>
-            <em>${author}, ${createdAtDateString}</em>
+            <h2 class="card-title">${articleData.title}</h2>
+            <em>${articleData.author}, ${createdAtDateString}</em>
           </header>
     
-          <p class="card-text">${content}</p>
+          <p class="card-text">${articleData.content}</p>
+          ${
+            articleData.updatedAt
+              ? `<em>Zaktualizowano: ${articleData.updatedAt
+                  .toDate()
+                  .toLocaleString()}</em>`
+              : ""
+          }
+          
 
           <footer>
               <button class="btn btn-warning" data-delete><i class="bi bi-trash-fill"></i></button>
+              <a class="btn btn-success" href="edit.html#${articleId}"><i class="bi bi-pencil"></i></a>
           </footer>
         </div>
       </article>`;
@@ -73,14 +75,18 @@ export const initAddArticleForm = (articlesCollection) => {
       };
 
       addDoc(articlesCollection, newArticle).then((createdArticle) => {
-        addArticle(
-          newArticle.title,
-          newArticle.content,
-          newArticle.author,
-          newArticle.createdAt,
-          createdArticle.id,
-          articlesCollection
-        );
+        // const articleData = {
+        //   title: newArticle.title,
+        //   content: newArticle.content,
+        //   author: newArticle.author,
+        //   createdAt: newArticle.createdAt,
+        // }
+
+        const articleData = {
+          ...newArticle,
+        };
+
+        addArticle(articleData, createdArticle.id, articlesCollection);
       });
     });
   }

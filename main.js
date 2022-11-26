@@ -6,6 +6,7 @@ import { collection, getFirestore } from "firebase/firestore";
 import { initAddArticleForm } from "./add";
 import { renderArticles } from "./list";
 import { firebaseConfig } from "./config";
+import { initEditArticleForm } from "./edit";
 
 if (!firebaseConfig) {
   throw new Error("Dodaj konfigurację firebase w pliku ./config.js");
@@ -17,3 +18,4 @@ const articlesCollection = collection(database, "articles");
 
 renderArticles(articlesCollection);
 initAddArticleForm(articlesCollection);
+initEditArticleForm(articlesCollection);
