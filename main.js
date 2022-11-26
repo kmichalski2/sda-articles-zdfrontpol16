@@ -8,7 +8,7 @@ import { renderArticles } from "./list";
 import { firebaseConfig } from "./config";
 
 if (!firebaseConfig) {
-  throw new Exception("Dodaj konfigurację firebase w pliku ./config.js");
+  throw new Error("Dodaj konfigurację firebase w pliku ./config.js");
 }
 
 const app = initializeApp(firebaseConfig);
