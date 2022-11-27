@@ -25,11 +25,9 @@ const patchFormValues = (articlesCollection, articleId) => {
     // Sposób 1: Pobranie elementów osobno
     const titleInput = document.querySelector("[name='title']");
     const contentInput = document.querySelector("[name='content']");
-    const authorInput = document.querySelector("[name='author']");
 
     titleInput.value = articleData.title;
     contentInput.value = articleData.content;
-    authorInput.value = articleData.author;
 
     // Sposób 2: Pobranie inputów razem
     // const inputs = document.querySelectorAll("#editArticleForm [name]");
@@ -55,7 +53,6 @@ export const initEditArticleForm = (articlesCollection) => {
       const articleData = {
         title: formData.get("title"),
         content: formData.get("content"),
-        author: formData.get("author"),
         updatedAt: Timestamp.now(),
       };
 

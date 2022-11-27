@@ -10,7 +10,12 @@ import { renderArticles } from "./list";
 import { firebaseConfig } from "./config";
 import { initEditArticleForm } from "./edit";
 import { initRegisterForm } from "./auth/register";
-import { initLoginForm, initSignOutButton, redirectTo } from "./auth/login";
+import {
+  initLoginForm,
+  initSignOutButton,
+  redirectTo,
+  displayUsername,
+} from "./auth/login";
 
 if (!firebaseConfig) {
   throw new Error("Dodaj konfigurację firebase w pliku ./config.js");
@@ -23,7 +28,6 @@ const storage = getStorage(app);
 const articlesCollection = collection(database, "articles");
 
 renderArticles(articlesCollection, storage);
-initAddArticleForm(articlesCollection, storage);
 initEditArticleForm(articlesCollection);
 initRegisterForm(auth);
 initLoginForm(auth);
@@ -37,5 +41,8 @@ onAuthStateChanged(auth, (user) => {
     redirectTo("/auth/login.html");
   }
 
-  console.log(user);
+  if (user) {
+    displayUsername(user.email);
+    initAddArticleForm(articlesCollection, storage, user.email);
+  }
 });

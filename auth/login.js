@@ -5,6 +5,16 @@ export const redirectTo = (path) => {
   location.href = location.origin + path;
 };
 
+export const displayUsername = (username) => {
+  const placeholder = document.querySelector("#username");
+
+  if (!placeholder) {
+    return;
+  }
+
+  placeholder.innerHTML = username;
+};
+
 export const initLoginForm = (auth) => {
   const form = document.querySelector("#loginForm");
 

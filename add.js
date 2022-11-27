@@ -8,6 +8,23 @@ import {
 import { displayAlert } from "./alert";
 import { redirectTo } from "./auth/login";
 
+const renderImage = (image) => {
+  return `
+    <div class="img-wrapper">
+      <img class="img-thumbnail img-responsive" src="${image.url}" />
+    </div>
+    `;
+};
+
+const renderDeleteButton = (articleId, article) => {
+  return `
+    <button class="btn btn-warning" data-delete="${articleId}" data-title="${
+    article.title
+  }"
+             data-path="${article.image ? article.image.path : ""}">
+             <i class="bi bi-trash-fill"></i></button>`;
+};
+
 export const addArticle = (
   articleData,
   articleId,
@@ -27,11 +44,7 @@ export const addArticle = (
             <em>${articleData.author}, ${createdAtDateString}</em>
           </header>
 
-          <div class="img-wrapper">
-            <img class="img-thumbnail img-responsive" src="${
-              articleData.image.url
-            }" />
-          </div>
+          ${articleData.image ? renderImage(articleData.image) : ``} 
     
           <p class="card-text">${articleData.content}</p>
           ${
@@ -44,12 +57,7 @@ export const addArticle = (
           
 
           <footer>
-              <button class="btn btn-warning" data-delete="${articleId}" data-title="${
-      articleData.title
-    }"
-               data-path="${
-                 articleData.image.path
-               }"><i class="bi bi-trash-fill"></i></button>
+              ${renderDeleteButton(articleId, articleData)}
               <a class="btn btn-success" href="edit.html#${articleId}"><i class="bi bi-pencil"></i></a>
           </footer>
         </div>
@@ -77,17 +85,31 @@ const handleDeleteButtons = (articlesCollection, storage) => {
 
       deleteDoc(articleRef).then(() => {
         const imagePath = target.dataset.path;
-        const imageRef = ref(storage, imagePath);
-        deleteObject(imageRef).then(() => {
-          article.remove();
-          displayAlert(`Artykuł ${articleName} został usunięty`);
-        });
+
+        if (imagePath !== "") {
+          const imageRef = ref(storage, imagePath);
+          deleteObject(imageRef).then(() => {
+            article.remove();
+            displayAlert(`Artykuł ${articleName} został usunięty`);
+          });
+        }
       });
     });
   });
 };
 
-export const initAddArticleForm = (articlesCollection, storage) => {
+const addArticleToCollection = (articlesCollection, newArticle) => {
+  addDoc(articlesCollection, newArticle)
+    .then((createdArticle) => {
+      redirectTo("/index.html");
+    })
+    .catch((error) => {
+      displayAlert("Dodanie artykułu do bazy nie powiodło się!");
+      console.error(error);
+    });
+};
+
+export const initAddArticleForm = (articlesCollection, storage, username) => {
   const addArticleForm = document.querySelector("#addArticleForm");
 
   if (addArticleForm) {
@@ -100,43 +122,43 @@ export const initAddArticleForm = (articlesCollection, storage) => {
 
       const image = formData.get("image");
 
+      const newArticle = {
+        title: formData.get("title"),
+        content: formData.get("content"),
+        author: username,
+        createdAt: createdAtTimestamp,
+      };
+
       if (!image || image.size === 0) {
-        displayAlert("Wprowadzony plik jest niepoprawny");
-        return;
-      }
+        addArticleToCollection(articlesCollection, newArticle);
+      } else {
+        const fileRef = ref(storage, "images/" + image.name);
 
-      const fileRef = ref(storage, "images/" + image.name);
+        uploadBytes(fileRef, image)
+          .then((resource) => {
+            getDownloadURL(resource.ref).then((publicUrl) => {
+              const articleImage = {
+                url: publicUrl,
+                path: resource.metadata.fullPath,
+              };
 
-      uploadBytes(fileRef, image)
-        .then((resource) => {
-          getDownloadURL(resource.ref).then((publicUrl) => {
-            const articleImage = {
-              url: publicUrl,
-              path: resource.metadata.fullPath,
-            };
+              // Sposób 1
+              const newAritcleWithImage = {
+                ...newArticle,
+                image: articleImage,
+              };
 
-            const newArticle = {
-              title: formData.get("title"),
-              content: formData.get("content"),
-              author: formData.get("author"),
-              createdAt: createdAtTimestamp,
-              image: articleImage,
-            };
+              // Sposób 2
+              // newArticle.image = articleImage;
 
-            addDoc(articlesCollection, newArticle)
-              .then((createdArticle) => {
-                redirectTo("/index.html");
-              })
-              .catch((error) => {
-                displayAlert("Dodanie artykułu do bazy nie powiodło się!");
-                console.error(error);
-              });
+              addArticleToCollection(articlesCollection, newAritcleWithImage);
+            });
+          })
+          .catch((error) => {
+            displayAlert("Wgrywanie pliku nie powiodło się!");
+            console.error(error);
           });
-        })
-        .catch((error) => {
-          displayAlert("Wgrywanie pliku nie powiodło się!");
-          console.error(error);
-        });
+      }
     });
   }
 };
