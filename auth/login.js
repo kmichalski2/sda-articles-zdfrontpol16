@@ -1,4 +1,5 @@
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { displayAlert } from "../alert";
 
 export const redirectTo = (path) => {
   location.href = location.origin + path;
@@ -13,6 +14,9 @@ export const initLoginForm = (auth) => {
 
       const formData = new FormData(form);
 
+      console.log(formData.get("email"));
+      console.log(formData.get("password"));
+
       signInWithEmailAndPassword(
         auth,
         formData.get("email"),
@@ -22,12 +26,15 @@ export const initLoginForm = (auth) => {
           redirectTo("/index.html");
         })
         .catch((error) => {
-          if (error.code === "auth/wrong-password") {
-            alert("Wprowadzone hasło jest nieprawidłowe!");
-          }
-
-          if (error.code === "auth/user-not-found") {
-            alert("Nie znalaziono podanego uzytkownika!");
+          switch (error.code) {
+            case "auth/wrong-password":
+              displayAlert("Wprowadzone hasło jest nieprawidłowe!");
+              break;
+            case "auth/user-not-found":
+              displayAlert("Nie znalaziono podanego uzytkownika!");
+              break;
+            default:
+              console.table(error);
           }
         });
     });

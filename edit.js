@@ -1,4 +1,5 @@
 import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { displayAlert } from "./alert";
 
 const getAritcleId = () => {
   // split
@@ -61,7 +62,7 @@ export const initEditArticleForm = (articlesCollection) => {
       const articleRef = doc(articlesCollection, articleId);
 
       updateDoc(articleRef, articleData).then((result) => {
-        console.log("Artykuł został zaktualizowany");
+        displayAlert("Zmiany zostały zapisane");
       });
     });
   }
