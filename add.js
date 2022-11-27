@@ -1,9 +1,19 @@
 import { Timestamp, addDoc, doc, deleteDoc } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { displayAlert } from "./alert";
 import { redirectTo } from "./auth/login";
 
-export const addArticle = (articleData, articleId, articlesCollection) => {
+export const addArticle = (
+  articleData,
+  articleId,
+  articlesCollection,
+  storage
+) => {
   const articles = document.querySelector("#articles");
 
   if (articles) {
@@ -17,9 +27,11 @@ export const addArticle = (articleData, articleId, articlesCollection) => {
             <em>${articleData.author}, ${createdAtDateString}</em>
           </header>
 
-          <img class="img-responsive img-thumbnail" src="${
-            articleData.image.url
-          }" />
+          <div class="img-wrapper">
+            <img class="img-thumbnail img-responsive" src="${
+              articleData.image.url
+            }" />
+          </div>
     
           <p class="card-text">${articleData.content}</p>
           ${
@@ -34,7 +46,10 @@ export const addArticle = (articleData, articleId, articlesCollection) => {
           <footer>
               <button class="btn btn-warning" data-delete="${articleId}" data-title="${
       articleData.title
-    }"><i class="bi bi-trash-fill"></i></button>
+    }"
+               data-path="${
+                 articleData.image.path
+               }"><i class="bi bi-trash-fill"></i></button>
               <a class="btn btn-success" href="edit.html#${articleId}"><i class="bi bi-pencil"></i></a>
           </footer>
         </div>
@@ -42,11 +57,11 @@ export const addArticle = (articleData, articleId, articlesCollection) => {
 
     // articles.innerHTML = articles.innerHTML + article;
     articles.innerHTML += article;
-    handleDeleteButtons(articlesCollection);
+    handleDeleteButtons(articlesCollection, storage);
   }
 };
 
-const handleDeleteButtons = (articlesCollection) => {
+const handleDeleteButtons = (articlesCollection, storage) => {
   const buttons = document.querySelectorAll("[data-delete]");
 
   buttons.forEach((button) => {
@@ -60,9 +75,13 @@ const handleDeleteButtons = (articlesCollection) => {
       const articleName = target.dataset.title;
       const articleRef = doc(articlesCollection, articleId);
 
-      deleteDoc(articleRef).then((result) => {
-        article.remove();
-        displayAlert(`Artykuł ${articleName} został usunięty`);
+      deleteDoc(articleRef).then(() => {
+        const imagePath = target.dataset.path;
+        const imageRef = ref(storage, imagePath);
+        deleteObject(imageRef).then(() => {
+          article.remove();
+          displayAlert(`Artykuł ${articleName} został usunięty`);
+        });
       });
     });
   });

@@ -1,7 +1,7 @@
 import { getDocs, orderBy, query, where } from "firebase/firestore";
 import { addArticle } from "./add";
 
-export const renderArticles = (articlesCollection) => {
+export const renderArticles = (articlesCollection, storage) => {
   const articlesByCreatedDate = query(
     articlesCollection,
     orderBy("createdAt", "desc")
@@ -21,7 +21,7 @@ export const renderArticles = (articlesCollection) => {
       const articleData = doc.data();
       const articleId = doc.id;
 
-      addArticle(articleData, articleId, articlesCollection);
+      addArticle(articleData, articleId, articlesCollection, storage);
     });
   });
 };

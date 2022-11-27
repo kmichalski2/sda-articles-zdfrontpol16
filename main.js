@@ -22,7 +22,7 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const articlesCollection = collection(database, "articles");
 
-renderArticles(articlesCollection);
+renderArticles(articlesCollection, storage);
 initAddArticleForm(articlesCollection, storage);
 initEditArticleForm(articlesCollection);
 initRegisterForm(auth);
@@ -36,4 +36,6 @@ onAuthStateChanged(auth, (user) => {
   if (securedPages.includes(currentPathname) && !user) {
     redirectTo("/auth/login.html");
   }
+
+  console.log(user);
 });
