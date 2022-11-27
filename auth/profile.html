@@ -27,27 +27,32 @@
         >
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="index.html"
-                >Home</a
-              >
+              <a class="nav-link" aria-current="page" href="index.html">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="add.html">Add Article</a>
+              <a class="nav-link active" href="add.html">Add Article</a>
             </li>
           </ul>
           <div class="d-flex align-items-center">
-            <a
-              href="auth/profile.html"
-              class="text-white me-2"
-              id="username"
-            ></a>
+            <a href="profile.html" class="text-white me-2" id="username"></a>
             <button class="btn btn-warning" id="signOutButton">Sign Out</button>
           </div>
         </div>
       </div>
     </nav>
 
-    <section class="container mt-5" id="articles"></section>
+    <section class="container mt-5 mb-5">
+      <h2>Profile</h2>
+      <form id="userProfileForm">
+        <div class="mb-3">
+          <label class="form-label">Display name</label>
+          <input class="form-control" type="text" name="displayName" required />
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </section>
 
     <script type="module" src="/main.js"></script>
   </body>

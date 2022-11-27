@@ -16,6 +16,7 @@ import {
   redirectTo,
   displayUsername,
 } from "./auth/login";
+import { initProfileForm } from "./auth/profile";
 
 if (!firebaseConfig) {
   throw new Error("Dodaj konfigurację firebase w pliku ./config.js");
@@ -42,7 +43,8 @@ onAuthStateChanged(auth, (user) => {
   }
 
   if (user) {
-    displayUsername(user.email);
-    initAddArticleForm(articlesCollection, storage, user.email);
+    displayUsername(user.displayName);
+    initAddArticleForm(articlesCollection, storage, user.displayName);
+    initProfileForm(user);
   }
 });
