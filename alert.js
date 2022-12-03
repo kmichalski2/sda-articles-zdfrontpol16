@@ -8,12 +8,26 @@ const addAlert = (message) => {
 };
 
 const createAlertsContainer = () => {
-  const alertsElement = `<div class="position-fixed bottom-0 w-100">
-  <div class="container" id="alerts"></div>
-  </div>`;
+  // const alertsElement = `<div class="position-fixed bottom-0 w-100">
+  // <div class="container" id="alerts"></div>
+  // </div>`;
 
-  const body = document.querySelector("body");
-  document.body.innerHTML += alertsElement;
+  // const body = document.querySelector("body");
+  // document.body.innerHTML += alertsElement;
+
+  const alertsElement = document.createElement("div");
+  alertsElement.classList.add("position-fixed", "bottom-0", "w-100");
+
+  // Sposób 1
+  const alertsContainer = document.createElement("div");
+  alertsContainer.classList.add("container");
+  alertsContainer.id = "alerts";
+  alertsElement.appendChild(alertsContainer);
+
+  // Sposób 2
+  // alertsElement.innerHTML = `<div class="container" id="alerts"></div>`;
+
+  document.body.appendChild(alertsElement);
 };
 
 export const displayAlert = (message) => {
@@ -22,6 +36,7 @@ export const displayAlert = (message) => {
   if (!alerts) {
     createAlertsContainer();
   }
+
   addAlert(message);
 
   // if (alerts) {

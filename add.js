@@ -76,8 +76,6 @@ const handleDeleteButtons = (articlesCollection, storage) => {
     button.addEventListener("click", (event) => {
       event.preventDefault();
 
-      console.log(event);
-
       const target = event.currentTarget;
       const article = target.parentElement.parentElement.parentElement;
 
@@ -94,6 +92,8 @@ const handleDeleteButtons = (articlesCollection, storage) => {
           deleteObject(imageRef).then(() => {
             displayAlert(`Artykuł ${articleName} został usunięty`);
           });
+        } else {
+          displayAlert(`Artykuł ${articleName} został usunięty`);
         }
       });
     });
