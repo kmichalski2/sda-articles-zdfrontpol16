@@ -5,6 +5,14 @@ const addAlert = (message) => {
   alert.innerHTML = message;
   alert.classList.add("alert", "alert-warning", "mb-3");
   alerts.appendChild(alert);
+
+  removeAlertAfterTimeout(alert, 3000);
+};
+
+const removeAlertAfterTimeout = (alert, timeout) => {
+  setTimeout(() => {
+    alert.remove();
+  }, timeout);
 };
 
 const createAlertsContainer = () => {
